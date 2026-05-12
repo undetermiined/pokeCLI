@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -23,33 +23,8 @@ func TestCleanInput(t *testing.T) {
 	for _, c := range cases {
 		actual := cleanInput(c.input)
 
-		//	Result length comparison
-		if len(actual) != len(c.expected) {
-			t.Errorf(`---------------------------------
-Input:     (%v)
-Expecting:  %v
-Actual:     %v
-Fail
-`, c.input, c.expected, actual)
+		if !reflect.DeepEqual(actual, c.expected) {
+			t.Errorf("cleanInput(%q): expected %v, got %v", c.input, c.expected, actual)
 		}
-
-		//	Result word comparison
-		for i := range actual {
-			if actual[i] != c.expected[i] {
-				t.Errorf(`---------------------------------
-Input:     (%v)
-Expecting:  %v
-Actual:     %v
-Fail
-`, c.input, c.expected, actual)
-			}
-		}
-
-		fmt.Printf(`---------------------------------
-Input:     (%v)
-Expecting:  %v
-Actual:     %v
-Pass!
-`, c.input, c.expected, actual)
 	}
 }
