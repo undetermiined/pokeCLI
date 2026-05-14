@@ -53,6 +53,7 @@ func cleanInput(text string) []string {
 type config struct {
 	next string
 	prev string
+	page int
 }
 
 type cliCommand struct {

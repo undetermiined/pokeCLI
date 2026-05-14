@@ -18,33 +18,55 @@ func commandMap(cfg *config) error {
 	if err != nil {
 		return err
 	}
+	cfg.page++
 
+	fmt.Printf("----\nlocation-area: Page %d\n----\n", cfg.page)
 	for _, area := range locationAreas.Results {
 		fmt.Println(area.Name)
 	}
 
-	*cfg.next = *locationAreas.Next
-	*cfg.prev = *locationAreas.Previous
+	if locationAreas.Next != nil {
+		cfg.next = *locationAreas.Next
+	} else {
+		cfg.next = ""
+	}
+	if locationAreas.Previous != nil {
+		cfg.prev = *locationAreas.Previous
+	} else {
+		cfg.prev = ""
+	}
 
 	return nil
 }
 
 func commandMapb(cfg *config) error {
-	if cfg.prev == nil {
-		return errors.New("Please select a page first!")
+	if cfg.prev == "" {
+		return errors.New("please select a page first")
 	}
 
-	locationAreas, err := pokeapi.GetLocationAreas(*cfg.prev)
+	pageURL := cfg.prev
+
+	locationAreas, err := pokeapi.GetLocationAreas(pageURL)
 	if err != nil {
 		return err
 	}
+	cfg.page--
 
+	fmt.Printf("----\nlocation-area: Page %d\n----\n", cfg.page)
 	for _, area := range locationAreas.Results {
 		fmt.Println(area.Name)
 	}
 
-	*cfg.next = *locationAreas.Next
-	*cfg.prev = *locationAreas.Previous
+	if locationAreas.Next != nil {
+		cfg.next = *locationAreas.Next
+	} else {
+		cfg.next = ""
+	}
+	if locationAreas.Previous != nil {
+		cfg.prev = *locationAreas.Previous
+	} else {
+		cfg.prev = ""
+	}
 
 	return nil
 }

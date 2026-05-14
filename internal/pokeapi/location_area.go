@@ -19,13 +19,19 @@ type LocationAreasResponse struct {
 
 func GetLocationAreas(pageUrl string) (LocationAreasResponse, error) {
 	var result LocationAreasResponse
-	resp, err := http.Get("https://pokeapi.co/api/v2/location-area")
+	resp, err := http.Get(pageUrl)
 	if err != nil {
 		return LocationAreasResponse{}, fmt.Errorf("location-area request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
-	json.NewDecoder(resp.Body).Decode(&result)
+	if resp.StatusCode != http.StatusOK {
+		return LocationAreasResponse{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return LocationAreasResponse{}, fmt.Errorf("decoding location-area response failed: %w", err)
+	}
 
 	return result, nil
 }
