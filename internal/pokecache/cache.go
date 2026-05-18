@@ -20,14 +20,17 @@ type Cache struct {
 func (c *Cache) reapLoop() {
 	ticker := time.NewTicker(c.interval)
 	for range ticker.C {
-		c.mu.Lock()
+		c.reap(time.Now())
+	}
+}
 
-		for key, entry := range c.entries {
-			if time.Since(entry.createdAt) > c.interval {
-				delete(c.entries, key)
-			}
+func (c *Cache) reap(now time.Time) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	for key, entry := range c.entries {
+		if now.Sub(entry.createdAt) > c.interval {
+			delete(c.entries, key)
 		}
-		c.mu.Unlock()
 	}
 }
 

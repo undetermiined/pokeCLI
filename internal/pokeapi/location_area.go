@@ -2,20 +2,10 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
-
-type LocationArea struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
-
-type LocationAreasResponse struct {
-	Next     *string        `json:"next"`
-	Previous *string        `json:"previous"`
-	Results  []LocationArea `json:"results"`
-}
 
 func (c *Client) GetLocationAreas(pageURL *string) (LocationAreasResponse, error) {
 	url := baseURL + "/location-area"
@@ -42,6 +32,10 @@ func (c *Client) GetLocationAreas(pageURL *string) (LocationAreasResponse, error
 		return LocationAreasResponse{}, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return LocationAreasResponse{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {
