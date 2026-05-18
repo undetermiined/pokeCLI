@@ -9,13 +9,14 @@ import (
 
 // Client -
 type Client struct {
-	cache      pokecache.Cache
+	cache      *pokecache.Cache
 	httpClient http.Client
 }
 
 // NewClient -
-func NewClient(timeout time.Duration, c *pokecache.Cache) Client {
+func NewClient(timeout, interval time.Duration) Client {
 	return Client{
+		cache: pokecache.NewCache(interval),
 		httpClient: http.Client{
 			Timeout: timeout,
 		},
