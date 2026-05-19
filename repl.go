@@ -35,13 +35,13 @@ func startRepl(cfg *config) {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, words[1:])
 			if err != nil {
 				fmt.Println(err)
 			}
 			continue
 		} else {
-			fmt.Println("Unknown command")
+			fmt.Println("unknown command")
 			continue
 		}
 	}
@@ -56,12 +56,13 @@ type config struct {
 	next          *string
 	prev          *string
 	page          int
+	caughtPokemon map[string]pokeapi.PokemonResponse
 }
 
 type cliCommand struct {
 	name     string
 	desc     string
-	callback func(*config) error
+	callback func(*config, []string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -85,6 +86,21 @@ func getCommands() map[string]cliCommand {
 			name:     "mapb",
 			desc:     "Display previous location-area pair list",
 			callback: commandMapb,
+		},
+		"explore": {
+			name:     "explore",
+			desc:     "Display possible Pokemon encounters at a given hyphen sensitive location-area name",
+			callback: commandExplore,
+		},
+		"catch": {
+			name:     "catch",
+			desc:     "Attempt to catch a wild pokemon by name!",
+			callback: commandCatch,
+		},
+		"inspect": {
+			name:     "inspect",
+			desc:     "Display information about a caught Pokemon",
+			callback: commandInspect,
 		},
 	}
 }

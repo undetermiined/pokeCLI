@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func commandMap(cfg *config) error {
+func commandMap(cfg *config, args []string) error {
 	locationAreas, err := cfg.pokeapiClient.GetLocationAreas(cfg.next)
 	if err != nil {
 		return err
@@ -16,6 +16,7 @@ func commandMap(cfg *config) error {
 	for _, area := range locationAreas.Results {
 		fmt.Println(area.Name)
 	}
+	fmt.Println("----")
 
 	cfg.next = locationAreas.Next
 	cfg.prev = locationAreas.Previous
@@ -23,7 +24,7 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args []string) error {
 	if cfg.prev == nil {
 		return errors.New("please select a page first")
 	}
@@ -38,6 +39,7 @@ func commandMapb(cfg *config) error {
 	for _, area := range locationAreas.Results {
 		fmt.Println(area.Name)
 	}
+	fmt.Println("----")
 
 	cfg.next = locationAreas.Next
 	cfg.prev = locationAreas.Previous
