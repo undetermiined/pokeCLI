@@ -13,6 +13,11 @@ func commandCatch(cfg *config, args []string) error {
 		return errors.New("please input single Pokemon name")
 	}
 
+	_, exists := cfg.caughtPokemon[args[0]]
+	if exists {
+		return fmt.Errorf("you have already caught %s", args[0])
+	}
+
 	pokeResp, err := cfg.pokeapiClient.GetPokemon(args[0])
 	if err != nil {
 		return err
@@ -26,13 +31,13 @@ func commandCatch(cfg *config, args []string) error {
 	}
 
 	chance := 100 - pokeResp.BaseExperience/2
-	roll := rand.Intn(100)
-	if chance < 5 {
-		chance = 5
+	roll := rand.Intn(75)
+	if chance < 15 {
+		chance = 15
 	}
 
 	if roll <= chance {
-		fmt.Printf("\nYou caught a wild %s!\n", args[0])
+		fmt.Printf("\nYou caught a wild %s!\nIt may now be inspected with the inspect command.\n", args[0])
 		cfg.caughtPokemon[args[0]] = pokeResp
 	} else {
 		fmt.Printf("\nThe wild %s fled!\n", args[0])
